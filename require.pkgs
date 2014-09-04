@@ -1,0 +1,16 @@
+Pillow==2.4.0
+Pmw==2.0.0
+PyPDF2==1.23
+SQLAlchemy==0.9.7
+Tempita==0.5.2
+argparse==1.2.1
+decorator==3.4.0
+ipython==2.2.0
+pbr==0.10.0
+preppy==2.3.2
+pyRXP==2.1.0
+reportlab==3.1.31
+rlextra==3.1.31
+six==1.7.3
+sqlalchemy-migrate==0.9.1
+wsgiref==0.1.2

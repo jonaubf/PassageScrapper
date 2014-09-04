@@ -1,3 +1,8 @@
+pdf_python/*
+Junk/*
+jub/*
+*.pdf
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
