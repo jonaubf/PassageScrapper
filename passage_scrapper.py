@@ -123,18 +123,18 @@ class PassageScrapper:
 
     def get_verses_list(self, vrange):
         few = re.compile(u'(\d+)-(\d+)')
-        single = re.compile(u'[,]?(\d+)[,]?')
+        single = re.compile(u'[,]*(\d+)[,]*')
         vlist = []
         if '-' in vrange:
             v = few.findall(vrange)
             for first, last in v:
                 vlist += range(int(first), int(last) + 1)
-            vrange = few.sub(vrange, '')
+            vrange = few.sub('', vrange)
         if vrange:
             v = single.findall(vrange)
             for item in v:
                 vlist += [int(item)]
-        return vlist
+        return sorted(vlist)
 
 
     def get_the_passage(self, passage):

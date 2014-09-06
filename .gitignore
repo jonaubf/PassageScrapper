@@ -2,6 +2,9 @@ pdf_python/*
 Junk/*
 jub/*
 *.pdf
+*.odt
+*.doc*
+*.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
