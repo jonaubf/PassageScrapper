@@ -139,7 +139,7 @@ class PassageScrapper:
 
     def get_the_passage(self, passage):
         verses_list = self.get_verses_list(passage[2])
-        book = "%" + passage[0] + "%" 
+        book = "%" + passage[0] + "%"
         verses = session.query(Verse).join(Chapter).join(Book).filter(Book.shortname.like(book)).filter(Chapter.number == int(passage[1])).filter(Verse.number.in_(verses_list)).all()
         return ([unicode(v.text) for v in verses])
 

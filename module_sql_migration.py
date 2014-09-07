@@ -6,12 +6,24 @@ import re
 from model import Book, Chapter, Verse, session
 
 class ReadTheBible:
+    """
+    class ReadTheBible is to convert BibleQuote module into SQLite3 database
+    """
+
     path = ''
 
     def __init__(self, path):
+        """
+        constructor
+        """
         self.path = path
 
+
     def read_bible_ini(self):
+        """
+        this method is reading the info about current BQ-module from the bibleqt.ini file
+        after it finds the reference to the next book file, it calls the read_the_book method
+        """
         try:
             bqtini = open(os.path.join(self.path,'Bibleqt.ini'), 'r')
         except:
@@ -31,6 +43,13 @@ class ReadTheBible:
         bqtini.close()
 
     def read_the_book(self, path, f_name, sh_names):
+        """
+        this method is reading each book, chapter by chapter and verse after verse and put it into the DataBase
+
+        path - the path to the book
+        f_name - full title of the current book
+        sh_names - list of the shorten names 
+        """
         try:
             module = open(os.path.join(self.path, path), 'r')
         except:

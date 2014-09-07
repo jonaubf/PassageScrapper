@@ -10,6 +10,12 @@ Base = declarative_base()
 
 
 class Book(Base):
+    """
+    class Book describes table, that contains info about the current book of the Bible
+    name - Book's name
+    shortnames - list of the sorten names of the book
+    chapters - backref for the chapters of the current book
+    """
     __tablename__ = 'books'
     id = Column(Integer, primary_key=True)
     name = Column(String(50))
@@ -22,6 +28,13 @@ class Book(Base):
 
 
 class Chapter(Base):
+    """
+    class Chapter describes table, that contains info about the current chapter
+    name - textual number of the chapter
+    number - Integer number of the chapter
+    book_id - Foreign key that points to the book chapter belongs
+    verses - backref for the verses of the chapter
+    """
     __tablename__ = 'chapters'
     id = Column(Integer, primary_key=True)
     name = Column(String(20))
@@ -35,6 +48,12 @@ class Chapter(Base):
 
 
 class Verse(Base):
+    """
+    class Verse describes table, that contains info about each verse
+    text - text of the verse
+    number - it's number
+    chapter_id - reference to the chapter this verse belongs
+    """
     __tablename__ = 'verses'
     id = Column(Integer, primary_key=True)
     text = Column(String)
