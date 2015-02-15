@@ -11,7 +11,8 @@ Base = declarative_base()
 
 class Book(Base):
     """
-    class Book describes table, that contains info about the current book of the Bible
+    class Book describes table, that contains info about the current
+    book of the Bible
     name - Book's name
     shortnames - list of the sorten names of the book
     chapters - backref for the chapters of the current book
@@ -23,8 +24,8 @@ class Book(Base):
     chapters = relationship("Chapter", backref="book")
 
     def __repr__(self):
-        return "<Book title(name='%s', shortnames='%s')>" % (
-                                self.name, self.shortname)
+        return "<Book title(name='%s', shortnames='%s')>" % \
+            (self.name, self.shortname)
 
 
 class Chapter(Base):
@@ -43,8 +44,7 @@ class Chapter(Base):
     verses = relationship("Verse", backref="chapter")
 
     def __repr__(self):
-        return "<Chapter (name='%s', book='%s')>" % (
-                self.name, self.book)
+        return "<Chapter (name='%s', book='%s')>" % (self.name, self.book)
 
 
 class Verse(Base):
@@ -61,10 +61,8 @@ class Verse(Base):
     chapter_id = Column(Integer, ForeignKey('chapters.id'))
 
     def __repr__(self):
-        return "Verse number:'%s'; unique_id:'%s'" % (
-                self.number, self.id)
+        return "Verse number:'%s'; unique_id:'%s'" % (self.number, self.id)
 
 Base.metadata.create_all(engine)
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
-

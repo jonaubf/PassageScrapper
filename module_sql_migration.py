@@ -5,6 +5,7 @@ import os
 import re
 from model import Book, Chapter, Verse, session
 
+
 class ReadTheBible:
     """
     class ReadTheBible is to convert BibleQuote module into SQLite3 database
@@ -18,14 +19,14 @@ class ReadTheBible:
         """
         self.path = path
 
-
     def read_bible_ini(self):
         """
-        this method is reading the info about current BQ-module from the bibleqt.ini file
-        after it finds the reference to the next book file, it calls the read_the_book method
+        this method is reading the info about current BQ-module from the
+        bibleqt.ini file after it finds the reference to the next book file,
+        it calls the read_the_book method
         """
         try:
-            bqtini = open(os.path.join(self.path,'Bibleqt.ini'), 'r')
+            bqtini = open(os.path.join(self.path, 'Bibleqt.ini'), 'r')
         except:
             print "oops, it seems file doesn't exists"
             return
@@ -44,17 +45,20 @@ class ReadTheBible:
 
     def read_the_book(self, path, f_name, sh_names):
         """
-        this method is reading each book, chapter by chapter and verse after verse and put it into the DataBase
+        this method is reading each book, chapter by chapter and verse after
+        verse and put it into the DataBase
 
         path - the path to the book
         f_name - full title of the current book
-        sh_names - list of the shorten names 
+        sh_names - list of the shorten names
         """
         try:
             module = open(os.path.join(self.path, path), 'r')
         except:
-            print "oops, the module %s doesn't exists" % (os.path.join(self.path, path))
+            print "oops, the module %s doesn't exists" % \
+                (os.path.join(self.path, path))
             return
+        print path, f_name, sh_names
         book = Book()
         book.name = f_name
         book.shortname = sh_names
@@ -65,7 +69,7 @@ class ReadTheBible:
         chapt_number = 1
         for line in module:
             uline = line.decode('utf-8', 'replace')
-            if u'<h4>' in uline:
+            if u'<h4>' in uline.lower() or u'<h1>' in uline.lower():
                 uline = tag_remove.sub('', uline)
                 chapter = Chapter()
                 chapter.name = uline
@@ -73,7 +77,7 @@ class ReadTheBible:
                 chapt_number += 1
                 book.chapters.append(chapter)
                 session.add(chapter)
-            if u'<p>' in uline:
+            if u'<p>' in uline.lower() or u'<sup>' in uline.lower():
                 uline = tag_remove.sub('', uline)
                 uline = re_strong.sub('', uline)
                 verse = Verse()
@@ -92,4 +96,3 @@ if __name__ == "__main__":
     module_path = os.path.join(os.getcwd(), 'jub')
     module_read = ReadTheBible(module_path)
     module_read.read_bible_ini()
-

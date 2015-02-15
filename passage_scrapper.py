@@ -15,26 +15,30 @@ from reportlab.lib.styles import ParagraphStyle
 from PyPDF2 import PdfFileMerger, PdfFileReader
 
 
-
 class MyPresentation:
     HEIGHT = 768
     WIDTH = 1024
     FONTNAME = 'Arial'
     FONTSIZE = 56
-    BCKGRDCOLOR =  (0.2, 0.5, 0.3)
+    BCKGRDCOLOR = (0, 0.2, 0.1)
     FONTCOLOR = white
     PASSAGE = []
-
 
     def __init__(self, fname, passage):
         """ Constructor """
         MyFontObject = ttfonts.TTFont('Arial', 'arial.ttf')
         pdfmetrics.registerFont(MyFontObject)
-        self.doc = SimpleDocTemplate(fname, pagesize = (self.WIDTH, self.HEIGHT),
-                leftMargin = 40, rightMargin = 40, topMargin = 100, bottomMargin = 30)
+        self.doc = SimpleDocTemplate(
+            fname,
+            pagesize=(self.WIDTH, self.HEIGHT),
+            leftMargin=40,
+            rightMargin=40,
+            topMargin=100,
+            bottomMargin=30,
+            allowSplitting=False
+            )
         self.story = []
         self.PASSAGE = passage
-
 
     def pageCanvas(self, canvas, doc):
         """
@@ -42,24 +46,24 @@ class MyPresentation:
         """
         canvas.saveState()
         canvas.setFont(self.FONTNAME, self.FONTSIZE)
-        canvas.setFillColorRGB(self.BCKGRDCOLOR[0], self.BCKGRDCOLOR[1], 
-                self.BCKGRDCOLOR[2])
-        canvas.rect(0, 0, self.WIDTH, self.HEIGHT, stroke = 0, fill = 1)
+        canvas.setFillColorRGB(
+            self.BCKGRDCOLOR[0], self.BCKGRDCOLOR[1], self.BCKGRDCOLOR[2])
+        canvas.rect(0, 0, self.WIDTH, self.HEIGHT, stroke=0, fill=1)
         canvas.restoreState()
         canvas.saveState()
         p = canvas.beginPath()
         p.rect(0, self.HEIGHT - 80, self.WIDTH, 80)
-        canvas.clipPath(p, stroke = 0)
-        canvas.linearGradient(0, self.HEIGHT - 80, self.WIDTH, 
-                self.HEIGHT - 80, (black, blue), extend = False)
+        canvas.clipPath(p, stroke=0)
+        canvas.linearGradient(
+            0, self.HEIGHT - 80, self.WIDTH, self.HEIGHT - 80,
+            (black, blue), extend=False)
         canvas.restoreState()
         canvas.saveState()
-        canvas.setFillColorRGB(1,1,1)
+        canvas.setFillColorRGB(1, 1, 1)
         canvas.setFont(self.FONTNAME, self.FONTSIZE)
-        canvas.drawString(40, 714, "%s.%s:%s" % (self.PASSAGE[0], self.PASSAGE[1],
-            self.PASSAGE[2]))
+        canvas.drawString(40, 714, "%s.%s:%s" % (self.PASSAGE[0], 
+                        self.PASSAGE[1], self.PASSAGE[2]))
         canvas.restoreState()
-
 
     def runBuild(self, str):
         p = ParagraphStyle('test')
@@ -71,10 +75,8 @@ class MyPresentation:
         for line in str:
             para = Paragraph("%s" % line, p)
             self.story.append(para)
-        self.doc.build(self.story, onFirstPage = self.pageCanvas, onLaterPages =
-                self.pageCanvas)
-
-
+        self.doc.build(self.story, onFirstPage=self.pageCanvas,
+            onLaterPages=self.pageCanvas)
 
 
 class PassageScrapper:
@@ -92,21 +94,20 @@ class PassageScrapper:
             filename = raw_input('Enter filename: ')
 
         filename_txt = filename[:string.rfind(filename, '.')] + '.txt'
-        if not os.path.exists(os.path.join(os.getcwd(),filename_txt)):
-            os.system('libreoffice --headless --convert-to txt:"Text" "' + filename + '"')
-        if os.path.exists(os.path.join(os.getcwd(),filename_txt)):
+        if not os.path.exists(os.path.join(os.getcwd(), filename_txt)):
+            os.system('libreoffice --headless --convert-to txt:"Text" "' + 
+                filename + '"')
+        if os.path.exists(os.path.join(os.getcwd(), filename_txt)):
             self.find_the_passages(filename_txt)
         else:
             print "something went wrong. there is no TXT-file"
-
 
     def find_the_passages(self, fname):
         """
         this method is to get a list of passages used in initial text
         """
-
         f = open(fname, 'r')
-        ftext = f.read().decode('utf-8','replace')
+        ftext = f.read().decode('utf-8', 'replace')
         p = re.compile(u'\(([0-9]?[а-яА-Яa-zA-Z]+)[ .]{1,2}(\d+):([\d,\-]+)\)')
         passages = p.findall(ftext)
         f.close()
@@ -115,11 +116,10 @@ class PassageScrapper:
 
         for passage in passages:
             index = passages.index(passage)
-            tmp_list += [ str(index) + ".pdf" ]
+            tmp_list += [str(index) + ".pdf"]
             self.create_pdf(passage, tmp_list[-1])
 
         self.merge_PDF(tmp_list)
-
 
     def get_verses_list(self, vrange):
         few = re.compile(u'(\d+)-(\d+)')
@@ -136,13 +136,13 @@ class PassageScrapper:
                 vlist += [int(item)]
         return sorted(vlist)
 
-
     def get_the_passage(self, passage):
         verses_list = self.get_verses_list(passage[2])
         book = "%" + passage[0] + "%"
-        verses = session.query(Verse).join(Chapter).join(Book).filter(Book.shortname.like(book)).filter(Chapter.number == int(passage[1])).filter(Verse.number.in_(verses_list)).all()
+        verses = session.query(Verse).join(Chapter).join(Book).filter(
+            Book.shortname.like(book)).filter(Chapter.number == int(
+                passage[1])).filter(Verse.number.in_(verses_list)).all()
         return ([unicode(v.text) for v in verses])
-
 
     def create_pdf(self, passage, tmp_file):
         working_dir = os.path.join(os.getcwd(), '_tmp')
@@ -154,11 +154,11 @@ class PassageScrapper:
         #print text
         tmp_PDF.runBuild(text)
 
-
     def merge_PDF(self, tmp_list):
         merger = PdfFileMerger()
         for filename in tmp_list:
-            merger.append(PdfFileReader(file(os.path.join(os.getcwd(), '_tmp', filename), 'rb')))
+            merger.append(PdfFileReader(file(os.path.join(os.getcwd(), '_tmp', 
+                filename), 'rb')))
         merger.write("presentation.pdf")
         os.system('rm -rf _tmp')
 
